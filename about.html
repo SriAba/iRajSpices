@@ -1,0 +1,81 @@
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iRaj Spices Website</title>
+<link rel="icon" href="images/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> 
+</head>
+<body>
+    <section class="sub-header">
+        <nav>
+            <a href="index.html"><img src="images/icon.png"></a>
+            <div class="nav-links" id="navLinks">  
+                <i class="fa fa-close" onclick="hideMenu()"></i>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="prices.html">PRICES</a></li>
+                    <li><a href="services.html">SERVICES</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+            <i class="fa fa-bars" onclick="showMenu()"></i>
+        </nav>   
+            <h1>About Us</h1>
+    </section>
+    
+    
+<!------- about us content -------->
+    
+<section class="about-us">
+    <div class="row">
+        <div class="about-col">
+            <h1>iRaj Spices</h1>     
+            <p>At <strong>iRAJ Spices</strong>, we carry forward India’s timeless spice heritage — the same legacy that once traveled the ancient Silk Route. From the rich soils of Kerala to the vibrant markets of Gujarat, our journey is rooted in authenticity, honesty, and a passion for flavor.<br>We source, trade, and deliver premium Indian spices to homes and businesses across the world, ensuring every grain reflects purity, quality, and the spirit of India. With trust as our measure and flavor as our promise, we bring tradition to every trade.</p>
+            <a href="https://www.instagram.com/hyhaus.in/" class="hero-btn red-btn">EXPLORE NOW</a>
+        </div>
+        <div class="about-col">
+            <img src="images/about.png">
+        </div>
+    </div>    
+</section>
+    
+<!-------- footer ---------->
+
+<section class="footer">
+        <h4>Journey the silk route with us.</h4>
+        <div class="icons">
+            <a href="https://www.facebook.com/hyhaus.in/"><i class="fa fa-facebook"></i></a>
+            <a href="https://x.com/hyhaus_official"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.instagram.com/hyhaus.in/"><i class="fa fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/kristal-constructions/"><i class="fa fa-linkedin"></i></a>
+            
+        </div>
+        <a href="https://www.linkedin.com/in/srirangaabakari/" class="footer-link"><p>made with <i class="fa fa-heart-o"></i> by Sriranga Abakari</p></a>
+</section> 
+  
+  
+<!----JavaScript for toggle menu---->
+<script>
+    var navLinks = document.getElementById("navLinks");
+
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+
+    function hideMenu() {
+        navLinks.style.right = "-200px";
+    }
+</script> 
+    
+</body>
+
+</html>    
+
+
+
+
+

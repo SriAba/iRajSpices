@@ -1,0 +1,348 @@
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iRaj Spices Website</title>
+<link rel="icon" href="images/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> 
+</head>
+<body>
+    <section class="header">
+        
+        <nav>
+            <a href="index.html"><img src="images/icon.png"></a>
+            <div class="nav-links" id="navLinks">  
+                <i class="fa fa-close" onclick="hideMenu()"></i>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="prices.html">PRICES</a></li>
+                    <li><a href="services.html">SERVICES</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+            <i class="fa fa-bars" onclick="showMenu()"></i>
+        </nav>
+        
+        <div class="text-box">
+            <h1>Every Spice Tells a Story</h1>
+            <p>Ancient spice routes still breathe.</p>
+            <a href="contact.html#contactForm" class="hero-btn">Contact Us</a>
+        </div>
+    </section>
+    
+<!---------- services ----------->
+    
+    <section class="services">
+        <h1>Services We Offer</h1>
+        <p>We offer a wide range of services that will meet every need.</p>
+        <div class="row">
+            
+            <div class="services-col">
+            <img src="images/retail_orders_icon.png" alt="Retail Orders Icon" class="service-icon">
+            <h3>Retail Orders</h3>
+            <p>We provide a seamless experience for retail customers, ensuring that every order is handled with care and precision. Our commitment to quality means you receive the best spices, every time.</p>
+            </div>
+            
+            <div class="services-col">
+            <img src="images/bulk_orders_icon.png" alt="Bulk Orders Icon" class="service-icon">
+            <h3>Bulk Orders</h3>
+            <p>We handle bulk orders with the same level of care and precision as our retail orders. Our team is equipped to manage large-scale requests, ensuring timely delivery and consistent quality.</p>
+            </div>
+            
+            <div class="services-col">
+            <img src="images/international_orders_icon.png" alt="International Orders Icon" class="service-icon">
+            <h3>International Bulk Orders</h3>
+            <p>We specialize in international bulk orders, ensuring that your spices reach their destination with the utmost care and efficiency. Our global network allows us to handle logistics seamlessly.</p>
+            </div>
+
+        </div>
+    </section>
+
+<!--Live prices of spices-->
+<section class="services">
+  <h1>Live Spice Market Prices</h1>
+  <p>Indicative rates from Indian mandis, updated daily.</p>
+
+  <div class="row" id="prices-row">
+    <!-- Cards will be injected here by JS -->
+  </div>
+
+</section>
+
+<script>
+  const apiKey = '579b464db66ec23bdd000001f9b08cca4201475f749d8667fcb8e1fd';
+  // Use your working resource ID here:
+  const resourceId = '9ef84268-d588-465a-a308-a864a43d0070'; // or '35985678-0d79-46b4-9ed6-6f13308a1d24'
+
+  /* Map: display name, API filter text, image path */
+  const spices = [
+    { name: 'Turmeric',  filter: 'Turmeric',               img: 'images/spices/turmeric.png' },
+    { name: 'Cumin',     filter: 'Cumin',                  img: 'images/spices/cumin.png' },
+    { name: 'Cardamom',  filter: 'Cardamoms – Whole',      img: 'images/spices/cardamom.png' },
+    { name: 'Pepper',    filter: 'Black Pepper – Whole',   img: 'images/spices/pepper.png' },
+    { name: 'Chilli',    filter: 'Red Chilli',             img: 'images/spices/chilli.png' },
+    { name: 'Coriander', filter: 'Coriander',              img: 'images/spices/coriander.png' }
+  ];
+
+  async function fetchPrice(spice) {
+    const url = `https://api.data.gov.in/resource/${resourceId}` +
+                `?api-key=${apiKey}&format=json&limit=1` +
+                `&filters[commodity]=${encodeURIComponent(spice.filter)}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.records && data.records.length > 0) {
+        return data.records[0];  
+      }
+      return null;
+    } catch(err) {
+      console.error('Error fetching price for', spice.name, err);
+      return null;
+    }
+  }
+
+  function renderCard(spice, record) {
+    // Wrap the entire card in a link
+    const link = document.createElement('a');
+    link.href = `prices.html`;
+    link.className = 'card-link';
+    link.setAttribute('aria-label', `${spice.name} market price`);
+
+    const container = document.createElement('div');
+    container.className = 'services-col';
+
+    const pricePerKg = record && record.modal_price
+      ? (Number(record.modal_price) / 100).toFixed(2)
+      : null;
+
+    container.innerHTML = `
+      <img class="spice-img" src="${spice.img}" alt="${spice.name}" loading="lazy">
+      <h3>${spice.name}</h3>
+      ${
+        record
+          ? `<p>
+              <strong>Market:</strong> ${record.market || '—'}<br>
+              <strong>Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
+              <strong>Approx:</strong> ₹${pricePerKg ?? '—'} / kg<br>
+              <strong>Date:</strong> ${record.date || '—'}
+            </p>`
+          : `<p>Data not available.<br><br><br><br></p>`
+      }
+    `;
+
+    link.appendChild(container);
+    return link;
+  }
+
+  async function loadPrices() {
+    const row = document.getElementById('prices-row');
+    for (const spice of spices) {
+      const rec = await fetchPrice(spice);
+      row.appendChild(renderCard(spice, rec));
+    }
+  }
+
+  loadPrices();
+</script>
+
+
+<!---------- testimonials ---------->
+    
+    <section class="testimonials">
+    <h1>What Our Clients Say</h1>
+    <p>Hear From Those Who Believe In Us.</p>
+
+    <div class="carousel-container">
+        <div class="carousel">
+            
+            <div class="testimonial-col">
+                <img src="images/testimonials/sriranga.png">
+                <div>
+                    <p>I run a small Hotel and I buy my spices from iRaj Spices! Great value, great quality!</p>
+                    <h3>Sriranga Abakari</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/anand.png">
+                <div>
+                    <p>Always on time. Fair Market price.</p>
+                    <h3>Anand Gudadur</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/namith.png">
+                <div>
+                    <p>Know the owner personally. Great service!</p>
+                    <h3>Namith</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/dwaraka.png">
+                <div>
+                    <p>Great service and support! Will recommend to others.</p>
+                    <h3>Dwaraka</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+
+            <!-- Duplicate slides for continuous effect -->
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/sriranga.png">
+                <div>
+                    <p>I run a small Hotel and I buy my spices from iRaj Spices! Great value, great quality!</p>
+                    <h3>Sriranga Abakari</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/anand.png">
+                <div>
+                    <p>Always on time. Fair Market price.</p>
+                    <h3>Anand Gudadur</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/namith.png">
+                <div>
+                    <p>Know the owner personally. Great service!</p>
+                    <h3>Namith</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-col">
+                <img src="images/testimonials/dwaraka.png">
+                <div>
+                    <p>Great service and support! Will recommend to others.</p>
+                    <h3>Dwaraka</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>  
+            
+        </div>
+    </div>
+</section>
+    
+<!------ Call To Action ------>
+
+<section class="cta">
+    
+       <h1>Contact us NOW to order your spices.</h1>
+        <a href="contact.html" class="hero-btn">CONTACT US</a>
+
+</section>
+
+<!-------- footer ---------->
+
+<section class="footer">
+        <h4>Journey the silk route with us.</h4>
+        <div class="icons">
+            <a href="https://www.facebook.com/hyhaus.in/"><i class="fa fa-facebook"></i></a>
+            <a href="https://x.com/hyhaus_official"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.instagram.com/hyhaus.in/"><i class="fa fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/kristal-constructions/"><i class="fa fa-linkedin"></i></a>
+            
+        </div>
+        <a href="https://www.linkedin.com/in/srirangaabakari/" class="footer-link"><p>made with <i class="fa fa-heart-o"></i> by Sriranga Abakari</p></a>
+</section>    
+  
+  
+<!----JavaScript for toggle menu---->
+<script>
+    var navLinks = document.getElementById("navLinks");
+
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+
+    function hideMenu() {
+        navLinks.style.right = "-200px";
+    }
+
+    let index = 0;
+
+function scrollCarousel(direction) {
+    const carousel = document.getElementById('projectCarousel');
+    const cardWidth = carousel.querySelector('.campus-col').offsetWidth + 30; // card + margin
+    const visibleCards = Math.floor(carousel.parentElement.offsetWidth / cardWidth);
+    const totalCards = carousel.children.length;
+
+    index += direction;
+
+    // limit movement
+    if (index < 0) index = 0;
+    if (index > totalCards - visibleCards) index = totalCards - visibleCards;
+
+    carousel.style.transform = `translateX(${-index * cardWidth}px)`;
+}
+</script> 
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

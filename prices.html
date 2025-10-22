@@ -1,0 +1,162 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iRaj Spices Website</title>
+<link rel="icon" href="images/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> 
+</head>
+<body>
+    <section class="sub-header">
+        <nav>
+            <a href="index.html"><img src="images/icon.png"></a>
+            <div class="nav-links" id="navLinks">  
+                <i class="fa fa-close" onclick="hideMenu()"></i>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="prices.html">PRICES</a></li>
+                    <li><a href="services.html">SERVICES</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+            <i class="fa fa-bars" onclick="showMenu()"></i>
+        </nav>   
+            <h1>Prices</h1>
+    </section>
+
+<!------- prices content -------->
+    
+
+<section class="services">
+  <h1>Live Spice Market Prices</h1>
+  <p>Indicative rates from Indian mandis, updated daily.</p>
+
+  <div class="row" id="prices-row">
+    <!-- Cards will be injected here by JS -->
+  </div>
+
+</section>
+
+<script>
+  const apiKey = '579b464db66ec23bdd000001f9b08cca4201475f749d8667fcb8e1fd';
+  // Use your working resource ID here:
+  const resourceId = '9ef84268-d588-465a-a308-a864a43d0070'; // or '35985678-0d79-46b4-9ed6-6f13308a1d24'
+
+  /* Map: display name, API filter text, image path */
+  const spices = [
+    { name: 'Ajwain',              filter: 'Ajwain',              img: 'images/spices/ajwain.png' },
+    { name: 'Asafoetida',          filter: 'Asafoetida (Hing)',   img: 'images/spices/asafoetida.png' },
+    { name: 'Black Pepper',        filter: 'Black Pepper – Whole',img: 'images/spices/pepper.png' },
+    { name: 'Cardamom',            filter: 'Cardamoms – Whole',   img: 'images/spices/cardamom.png' },
+    { name: 'Cloves',              filter: 'Cloves – Whole',      img: 'images/spices/cloves.png' },
+    { name: 'Coriander',           filter: 'Coriander – Whole',   img: 'images/spices/coriander.png' },
+    { name: 'Cumin',               filter: 'Cumin',               img: 'images/spices/cumin.png' },
+    { name: 'Dried Raw Mango',     filter: 'Dried Raw Mango Slices', img: 'images/spices/raw_mango.png' },
+    { name: 'Dry Ginger',          filter: 'Dry Ginger',          img: 'images/spices/ginger.png' },
+    { name: 'Fennel Seed',         filter: 'Fennel Seed',         img: 'images/spices/fennel.png' },
+    { name: 'Fenugreek Seed',      filter: 'Fenugreek Seed',      img: 'images/spices/fenugreek.png' },
+    { name: 'Large Cardamom',      filter: 'Large Cardamom',      img: 'images/spices/large_cardamom.png' },
+    { name: 'Mace',                filter: 'Mace – Whole',        img: 'images/spices/mace.png' },
+    { name: 'Poppy Seed',          filter: 'Poppy Seed',          img: 'images/spices/poppy.png' },
+    { name: 'Red Chilli',          filter: 'Red Chilli',          img: 'images/spices/chilli.png' },
+    { name: 'Tejpat',              filter: 'Tejpat',              img: 'images/spices/tejpat.png' },
+    { name: 'Turmeric',            filter: 'Turmeric',            img: 'images/spices/turmeric.png' }
+    ];
+
+
+  async function fetchPrice(spice) {
+    const url = `https://api.data.gov.in/resource/${resourceId}` +
+                `?api-key=${apiKey}&format=json&limit=1` +
+                `&filters[commodity]=${encodeURIComponent(spice.filter)}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.records && data.records.length > 0) {
+        return data.records[0];  
+      }
+      return null;
+    } catch(err) {
+      console.error('Error fetching price for', spice.name, err);
+      return null;
+    }
+  }
+
+  function renderCard(spice, record) {
+    // Wrap the entire card in a link
+    const link = document.createElement('a');
+    link.href = `prices.html`;
+    link.className = 'card-link';
+    link.setAttribute('aria-label', `${spice.name} market price`);
+
+    const container = document.createElement('div');
+    container.className = 'services-col';
+
+    const pricePerKg = record && record.modal_price
+      ? (Number(record.modal_price) / 100).toFixed(2)
+      : null;
+
+    container.innerHTML = `
+      <img class="spice-img" src="${spice.img}" alt="${spice.name}" loading="lazy">
+      <h3>${spice.name}</h3>
+      ${
+        record
+          ? `<p>
+              <strong>Market:</strong> ${record.market || '—'}<br>
+              <strong>Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
+              <strong>Approx:</strong> ₹${pricePerKg ?? '—'} / kg<br>
+              <strong>Date:</strong> ${record.date || '—'}
+            </p>`
+          : `<p>Data not available.<br><br><br><br></p>`
+      }
+    `;
+
+    link.appendChild(container);
+    return link;
+  }
+
+  async function loadPrices() {
+    const row = document.getElementById('prices-row');
+    for (const spice of spices) {
+      const rec = await fetchPrice(spice);
+      row.appendChild(renderCard(spice, rec));
+    }
+  }
+
+  loadPrices();
+</script>
+
+
+<!-------- footer ---------->
+
+<section class="footer">
+        <h4>Journey the silk route with us.</h4>
+        <div class="icons">
+            <a href="https://www.facebook.com/hyhaus.in/"><i class="fa fa-facebook"></i></a>
+            <a href="https://x.com/hyhaus_official"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.instagram.com/hyhaus.in/"><i class="fa fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/kristal-constructions/"><i class="fa fa-linkedin"></i></a>
+            
+        </div>
+        <a href="https://www.linkedin.com/in/srirangaabakari/" class="footer-link"><p>made with <i class="fa fa-heart-o"></i> by Sriranga Abakari</p></a>
+</section> 
+  
+  
+<!----JavaScript for toggle menu---->
+<script>
+    var navLinks = document.getElementById("navLinks");
+
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+
+    function hideMenu() {
+        navLinks.style.right = "-200px";
+    }
+</script> 
+    
+</body>
+
+</html>    
+
