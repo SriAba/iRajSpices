@@ -46,18 +46,18 @@
 
   /* Map: display name, API filter text, image path */
   const spices = [
+    { name: 'Large Cardamom',      filter: 'Large Cardamom',      img: 'images/spices/large_cardamom.png' },
+    { name: 'Black Pepper',        filter: 'Black Pepper – Whole',img: 'images/spices/pepper.png' },
+    { name: 'Cloves',              filter: 'Cloves – Whole',      img: 'images/spices/cloves.png' },
     { name: 'Ajwain',              filter: 'Ajwain',              img: 'images/spices/ajwain.png' },
     { name: 'Asafoetida',          filter: 'Asafoetida (Hing)',   img: 'images/spices/asafoetida.png' },
-    { name: 'Black Pepper',        filter: 'Black Pepper – Whole',img: 'images/spices/pepper.png' },
     { name: 'Cardamom',            filter: 'Cardamoms – Whole',   img: 'images/spices/cardamom.png' },
-    { name: 'Cloves',              filter: 'Cloves – Whole',      img: 'images/spices/cloves.png' },
     { name: 'Coriander',           filter: 'Coriander – Whole',   img: 'images/spices/coriander.png' },
     { name: 'Cumin',               filter: 'Cumin',               img: 'images/spices/cumin.png' },
     { name: 'Dried Raw Mango',     filter: 'Dried Raw Mango Slices', img: 'images/spices/raw_mango.png' },
     { name: 'Dry Ginger',          filter: 'Dry Ginger',          img: 'images/spices/ginger.png' },
     { name: 'Fennel Seed',         filter: 'Fennel Seed',         img: 'images/spices/fennel.png' },
     { name: 'Fenugreek Seed',      filter: 'Fenugreek Seed',      img: 'images/spices/fenugreek.png' },
-    { name: 'Large Cardamom',      filter: 'Large Cardamom',      img: 'images/spices/large_cardamom.png' },
     { name: 'Mace',                filter: 'Mace – Whole',        img: 'images/spices/mace.png' },
     { name: 'Poppy Seed',          filter: 'Poppy Seed',          img: 'images/spices/poppy.png' },
     { name: 'Red Chilli',          filter: 'Red Chilli',          img: 'images/spices/chilli.png' },
@@ -103,10 +103,8 @@
       ${
         record
           ? `<p>
-              <strong>Market:</strong> ${record.market || '—'}<br>
-              <strong>Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
+              <strong>Market Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
               <strong>Approx:</strong> ₹${pricePerKg ?? '—'} / kg<br>
-              <strong>Date:</strong> ${record.date || '—'}
             </p>`
           : `<p>Data not available.<br><br><br><br></p>`
       }
@@ -159,6 +157,7 @@
 </body>
 
 </html>    
+
 
 
 
