@@ -23,15 +23,15 @@
             </div>
             <i class="fa fa-bars" onclick="showMenu()"></i>
         </nav>   
-            <h1>Prices</h1>
+            <h1>Spices</h1>
     </section>
 
 <!------- prices content -------->
     
 
 <section class="services">
-  <h1>Live Spice Market Prices</h1>
-  <p>Indicative rates from Indian mandis, updated daily.</p>
+  <h1>Our Spices</h1>
+  <p></p>
 
   <div class="row" id="prices-row">
     <!-- Cards will be injected here by JS -->
@@ -103,8 +103,7 @@
       ${
         record
           ? `<p>
-              <strong>Market Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
-              <strong>Approx:</strong> ₹${pricePerKg ?? '—'} / kg<br>
+              
             </p>`
           : `<p>Data not available.<br><br><br><br></p>`
       }
@@ -157,6 +156,7 @@
 </body>
 
 </html>    
+
 
 
 
