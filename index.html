@@ -27,7 +27,7 @@
         </nav>
         
         <div class="text-box">
-            <h1>From the Heart of Kaveri Belt</h1>
+            <h1>From the Heart of Kaveri</h1>
             <p>Pure. Authentic. Naturally Grown.</p>
             <a href="contact.html#contactForm" class="hero-btn">Contact Us</a>
         </div>
@@ -79,10 +79,10 @@
 
   /* Map: display name, API filter text, image path */
   const spices = [
-    { name: 'Turmeric',  filter: 'Turmeric',               img: 'images/spices/turmeric.png' },
-    { name: 'Cumin',     filter: 'Cumin',                  img: 'images/spices/cumin.png' },
     { name: 'Cardamom',  filter: 'Cardamoms – Whole',      img: 'images/spices/cardamom.png' },
     { name: 'Pepper',    filter: 'Black Pepper – Whole',   img: 'images/spices/pepper.png' },
+    { name: 'Turmeric',  filter: 'Turmeric',               img: 'images/spices/turmeric.png' },
+    { name: 'Cumin',     filter: 'Cumin',                  img: 'images/spices/cumin.png' },
     { name: 'Chilli',    filter: 'Red Chilli',             img: 'images/spices/chilli.png' },
     { name: 'Coriander', filter: 'Coriander',              img: 'images/spices/coriander.png' }
   ];
@@ -124,10 +124,7 @@
       ${
         record
           ? `<p>
-              <strong>Market:</strong> ${record.market || '—'}<br>
-              <strong>Price (modal):</strong> ₹${record.modal_price || '—'} / qtl<br>
-              <strong>Approx:</strong> ₹${pricePerKg ?? '—'} / kg<br>
-              <strong>Date:</strong> ${record.date || '—'}
+              
             </p>`
           : `<p>Data not available.<br><br><br><br></p>`
       }
@@ -324,6 +321,7 @@ function scrollCarousel(direction) {
     
 </body>
 </html>
+
 
 
 
